@@ -8,7 +8,7 @@ OBJ = $(SRC:.c=.o)
 LIB = libmobipocket.a
 INSTALLDIR = /usr/local/
 INSTALLDIRINC = $(INSTALLDIR)include/mobipocket/
-INSTALLDIRLIB = $(INSTALLDIR)lib/mobipocket/
+INSTALLDIRLIB = $(INSTALLDIR)lib/
 
 all: $(SRC) $(LIB)
 
@@ -20,9 +20,8 @@ $(LIB):
 	ranlib $(LIB)
 
 install:
-	mkdir $(INSTALLDIRINC)
+	mkdir -p $(INSTALLDIRINC)
 	cp $(INCDIR)*.h $(INSTALLDIRINC)
-	mkdir $(INSTALLDIRLIB)
 	cp $(LIB) $(INSTALLDIRLIB)
 
 clean:
