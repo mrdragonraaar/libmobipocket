@@ -1,0 +1,256 @@
+/**
+ * mobi_header.c
+ * 
+ * (c)2012 mrdragonraaar.com
+ */
+#include "mobi_header.h"
+
+/* Default MOBI Header */
+const mobi_header_t _mobi_header = { };
+
+/**
+ * Initialise MOBI header.
+ * @param *mobi_h pointer to location that stores MOBI header.
+ */
+void init_mobi_header(mobi_header_t *mobi_h)
+{
+	*mobi_h = _mobi_header;
+}
+
+/**
+ * Get MOBI header from PDB record 0.
+ * @param *mobi_h pointer to location that stores MOBI header.
+ * @param *pdb_record_0 pointer to PDB record 0.
+ * @return size_t offset in PDB record 0.
+ */
+size_t get_mobi_header(mobi_header_t *mobi_h, const char *pdb_record_0)
+{
+	base_header_t base_h;
+	size_t offset = get_base_header(&base_h, PALMDOC_HEADER_LEN, 
+	   pdb_record_0);
+
+	if (offset != -1)
+	{
+		if (is_mobi_header(base_h))
+			convert_base2mobi(mobi_h, base_h);
+		else
+			offset = -1;
+
+		free_base_header(&base_h);
+	}
+
+	return offset;
+}
+
+/**
+ * Convert base header to MOBI header.
+ * @param *mobi_h pointer to location that stores MOBI header.
+ * @param base_h base header.
+ */
+void convert_base2mobi(mobi_header_t *mobi_h, const base_header_t base_h)
+{
+	init_mobi_header(mobi_h);
+
+	/* Identifier */
+	memcpy(&mobi_h->identifier, base_h.identifier, 
+	   sizeof(mobi_h->identifier));
+	/* Header Length */
+	mobi_h->header_length = base_h.header_length;
+
+	size_t offset = 0;
+	/* MOBI Type */
+	offset = get_header_field_l(&mobi_h->mobi_type, offset, base_h.data);
+	/* Text Encoding */
+	offset = get_header_field_l(&mobi_h->text_encoding, offset, 
+	   base_h.data);
+	/* Unique ID */
+	offset = get_header_field_l(&mobi_h->unique_id, offset, base_h.data);
+	/* File Version */
+	offset = get_header_field_l(&mobi_h->file_version, offset, base_h.data);
+	/* Ortographic Index */
+	offset = get_header_field_l(&mobi_h->ortographic_index, offset, 
+	   base_h.data);
+	/* Inflection Index */
+	offset = get_header_field_l(&mobi_h->inflection_index, offset, 
+	   base_h.data);
+	/* Index Names */
+	offset = get_header_field_l(&mobi_h->index_names, offset, base_h.data);
+	/* Index Keys */
+	offset = get_header_field_l(&mobi_h->index_keys, offset, base_h.data);
+	/* Extra Index 0 */
+	offset = get_header_field_l(&mobi_h->extra_index_0, offset, 
+	   base_h.data);
+	/* Extra Index 1 */
+	offset = get_header_field_l(&mobi_h->extra_index_1, offset, 
+	   base_h.data);
+	/* Extra Index 2 */
+	offset = get_header_field_l(&mobi_h->extra_index_2, offset, 
+	   base_h.data);
+	/* Extra Index 3 */
+	offset = get_header_field_l(&mobi_h->extra_index_3, offset, 
+	   base_h.data);
+	/* Extra Index 4 */
+	offset = get_header_field_l(&mobi_h->extra_index_4, offset, 
+	   base_h.data);
+	/* Extra Index 5 */
+	offset = get_header_field_l(&mobi_h->extra_index_5, offset, 
+	   base_h.data);
+	/* First Non-Book Index */
+	offset = get_header_field_l(&mobi_h->first_non_book_index, offset, 
+	   base_h.data);
+	/* Full Name Offset */
+	offset = get_header_field_l(&mobi_h->full_name_offset, offset, 
+	   base_h.data);
+	/* Full Name Length */
+	offset = get_header_field_l(&mobi_h->full_name_length, offset, 
+	   base_h.data);
+	/* Locale */
+	offset = get_header_field_l(&mobi_h->locale, offset, base_h.data);
+	/* Input Language */
+	offset = get_header_field_l(&mobi_h->input_language, offset, 
+	   base_h.data);
+	/* Output Language */
+	offset = get_header_field_l(&mobi_h->output_language, offset, 
+	   base_h.data);
+	/* Min Version */
+	offset = get_header_field_l(&mobi_h->min_version, offset, base_h.data);
+	/* First Image Index */
+	offset = get_header_field_l(&mobi_h->first_image_index, offset, 
+	   base_h.data);
+	/* Huffman Record Offset */
+	offset = get_header_field_l(&mobi_h->huffman_record_offset, offset, 
+	   base_h.data);
+	/* Huffman Record Count */
+	offset = get_header_field_l(&mobi_h->huffman_record_count, offset, 
+	   base_h.data);
+	/* Huffman Table Offset */
+	offset = get_header_field_l(&mobi_h->huffman_table_offset, offset, 
+	   base_h.data);
+	/* Huffman Table Length */
+	offset = get_header_field_l(&mobi_h->huffman_table_length, offset, 
+	   base_h.data);
+	/* EXTH Flags */
+	offset = get_header_field_l(&mobi_h->exth_flags, offset, base_h.data);
+	/* ignore unknown bytes */
+	offset += 32;
+	/* DRM Offset */
+	offset = get_header_field_l(&mobi_h->drm_offset, offset, base_h.data);
+	/* DRM Count */
+	offset = get_header_field_l(&mobi_h->drm_count, offset, base_h.data);
+	/* DRM Size */
+	offset = get_header_field_l(&mobi_h->drm_size, offset, base_h.data);
+	/* DRM Flags */
+	offset = get_header_field_l(&mobi_h->drm_flags, offset, base_h.data);
+}
+
+/**
+ * Get MOBI type as string.
+ * @param mobi_h MOBI header.
+ * @return char* MOBI type string.
+ */
+char* mobi_type_str(const mobi_header_t mobi_h)
+{
+	switch (mobi_h.mobi_type)
+	{
+		case MOBI_TYPE_MOBIPOCKET:
+			return "MOBIPocket";
+		case MOBI_TYPE_PALMDOC:
+			return "PalmDOC";
+		case MOBI_TYPE_AUDIO:
+			return "Audio";
+		case MOBI_TYPE_KINDLEGEN:
+			return "MOBIPocket generated by KindleGen";
+		case MOBI_TYPE_KF8:
+			return "KF8 generated by KindleGen";
+		case MOBI_TYPE_NEWS:
+			return "News";
+		case MOBI_TYPE_NEWSFEED:
+			return "News Feed";
+		case MOBI_TYPE_MAGAZINE:
+			return "News Magazine";
+		case MOBI_TYPE_PICS:
+			return "PICS";
+		case MOBI_TYPE_WORD:
+			return "WORD";
+		case MOBI_TYPE_XLS:
+			return "XLS";
+		case MOBI_TYPE_PPT:
+			return "PPT";
+		case MOBI_TYPE_TEXT:
+			return "TEXT";
+		case MOBI_TYPE_HTML:
+			return "HTML";
+		default:
+			return NULL;
+	}
+}
+
+/**
+ * Get MOBI text encoding as string.
+ * @param mobi_h MOBI header.
+ * @return char* MOBI text encoding string.
+ */
+char* mobi_text_encoding_str(const mobi_header_t mobi_h)
+{
+	switch (mobi_h.text_encoding)
+	{
+		case MOBI_ENCODING_WINLATIN1:
+			return "WinLatin1";
+		case MOBI_ENCODING_UTF8:
+			return "UTF-8";
+		default:
+			return NULL;
+	}
+}
+
+/**
+ * Check if EXTH header should exist.
+ * @param mobi_h MOBI header.
+ * @return uint8_t non-zero if EXTH header should exist.
+ */
+uint8_t has_exth_header(const mobi_header_t mobi_h)
+{
+	return mobi_h.exth_flags & 0x40;
+}
+
+/**
+ * Print MOBI header.
+ * @param mobi_h MOBI header.
+ */
+void print_mobi_header(const mobi_header_t mobi_h)
+{
+	printf("Identifier: %s\n", mobi_h.identifier);
+	printf("Header Length: %i\n", mobi_h.header_length);
+	printf("MOBI Type: %i\n", mobi_h.mobi_type);
+	printf("Text Encoding: %i\n", mobi_h.text_encoding);
+	printf("Unique ID: %i\n", mobi_h.unique_id);
+	printf("File Version: %i\n", mobi_h.file_version);
+	printf("Ortographic Index: %i\n", mobi_h.ortographic_index);
+	printf("Inflection Index: %i\n", mobi_h.inflection_index);
+	printf("Index Names: %i\n", mobi_h.index_names);
+	printf("Index Keys: %i\n", mobi_h.index_keys);
+	printf("Extra Index 0: %i\n", mobi_h.extra_index_0);
+	printf("Extra Index 1: %i\n", mobi_h.extra_index_1);
+	printf("Extra Index 2: %i\n", mobi_h.extra_index_2);
+	printf("Extra Index 3: %i\n", mobi_h.extra_index_3);
+	printf("Extra Index 4: %i\n", mobi_h.extra_index_4);
+	printf("Extra Index 5: %i\n", mobi_h.extra_index_5);
+	printf("First Non-Book Index: %i\n", mobi_h.first_non_book_index);
+	printf("Full Name Offset: %i\n", mobi_h.full_name_offset);
+	printf("Full Name Length: %i\n", mobi_h.full_name_length);
+	printf("Locale: %i\n", mobi_h.locale);
+	printf("Input Language: %i\n", mobi_h.input_language);
+	printf("Output Language: %i\n", mobi_h.output_language);
+	printf("Min Version: %i\n", mobi_h.min_version);
+	printf("First Image Index: %i\n", mobi_h.first_image_index);
+	printf("Huffman Record Offset: %i\n", mobi_h.huffman_record_offset);
+	printf("Huffman Record Count: %i\n", mobi_h.huffman_record_count);
+	printf("Huffman Table Offset: %i\n", mobi_h.huffman_table_offset);
+	printf("Huffman Table Length: %i\n", mobi_h.huffman_table_length);
+	printf("EXTH Flags: %i\n", mobi_h.exth_flags);
+	printf("DRM Offset: %i\n", mobi_h.drm_offset);
+	printf("DRM Count: %i\n", mobi_h.drm_count);
+	printf("DRM Size: %i\n", mobi_h.drm_size);
+	printf("DRM Flags: %i\n", mobi_h.drm_flags);
+}
+
