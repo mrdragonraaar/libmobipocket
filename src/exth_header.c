@@ -252,15 +252,15 @@ char* exth_creator_software_str(const exth_header_t exth_h)
 	switch(exth_record_l(exth_h, EXTH_RECORD_TYPE_CREATORSOFTWARE))
 	{
 		case CREATORSOFTWARE_MOBIGEN: 
-			return "mobigen";
+			return CREATORSOFTWARE_MOBIGEN_STR;
 		case CREATORSOFTWARE_MOBIPOCKETCREATOR: 
-			return "MobiPocket Creator";
+			return CREATORSOFTWARE_MOBIPOCKETCREATOR_STR;
 		case CREATORSOFTWARE_KINDLEGEN_WINDOWS:
-			return "kindlegen (Windows)";
+			return CREATORSOFTWARE_KINDLEGEN_WINDOWS_STR;
 		case CREATORSOFTWARE_KINDLEGEN_LINUX:
-			return "kindlegen (Linux)";
+			return CREATORSOFTWARE_KINDLEGEN_LINUX_STR;
 		case CREATORSOFTWARE_KINDLEGEN_MAC:
-			return "kindlegen (Mac)";
+			return CREATORSOFTWARE_KINDLEGEN_MAC_STR;
 		default:
 			return NULL;
 	}
@@ -291,13 +291,13 @@ uint8_t is_exth_cde_type(const exth_header_t exth_h, const char *cde_type)
 char* exth_cde_type_str(const exth_header_t exth_h)
 {
 	if (is_exth_cde_type(exth_h, CDETYPE_PERSONALDOC))
-		return "Personal Doc";
+		return CDETYPE_PERSONALDOC_STR;
 
 	if (is_exth_cde_type(exth_h, CDETYPE_EBOOK))
-		return "EBook";
+		return CDETYPE_EBOOK_STR;
 
 	if (is_exth_cde_type(exth_h, CDETYPE_EBOOKSAMPLE))
-		return "EBook Sample";
+		return CDETYPE_EBOOKSAMPLE_STR;
 
 	return NULL;
 }

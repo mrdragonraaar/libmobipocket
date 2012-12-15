@@ -66,11 +66,19 @@
 #define CREATORSOFTWARE_KINDLEGEN_WINDOWS 200	/* kindlegen (Windows) */
 #define CREATORSOFTWARE_KINDLEGEN_LINUX 201	/* kindlegen (Linux) */
 #define CREATORSOFTWARE_KINDLEGEN_MAC 202	/* kindlegen (Mac) */
+#define CREATORSOFTWARE_MOBIGEN_STR		"mobigen"
+#define CREATORSOFTWARE_MOBIPOCKETCREATOR_STR	"MobiPocket Creator"
+#define CREATORSOFTWARE_KINDLEGEN_WINDOWS_STR	"kindlegen (Windows)"
+#define CREATORSOFTWARE_KINDLEGEN_LINUX_STR	"kindlegen (Linux)"
+#define CREATORSOFTWARE_KINDLEGEN_MAC_STR	"kindlegen (Mac)"
 
 /* CDE Types */
 #define CDETYPE_PERSONALDOC "PDOC"		/* Personal Doc */
 #define CDETYPE_EBOOK "EBOK"			/* EBook */
 #define CDETYPE_EBOOKSAMPLE "EBSP"		/* EBook Sample */
+#define CDETYPE_PERSONALDOC_STR			"Personal Doc"
+#define CDETYPE_EBOOK_STR			"EBook"
+#define CDETYPE_EBOOKSAMPLE_STR			"EBook Sample"
 
 /* EXTH Record */
 typedef struct {
