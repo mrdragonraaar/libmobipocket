@@ -14,6 +14,11 @@ size_t get_full_name(char **full_name, const mobi_header_t mobi_h,
 uint16_t mobipocket_cover_index(const mobipocket_t mobipocket);
 uint16_t mobipocket_thumb_index(const mobipocket_t mobipocket);
 
+uint32_t mobipocket_text_record(char *text, const mobipocket_t mobipocket, 
+   uint16_t index);
+uint32_t mobipocket_text_record_length(const mobipocket_t mobipocket, 
+   uint16_t index);
+
 /**
  * Initialise MOBIPocket.
  * @param *mobipocket pointer to location that stores MOBIPocket.
@@ -202,5 +207,117 @@ uint16_t mobipocket_thumb_index(const mobipocket_t mobipocket)
 {
 	return mobipocket.mobi_header.first_image_index +
 	   mobipocket_thumb_offset(mobipocket);
+}
+
+/**
+ * Get the MOBIPocket text.
+ * @param *text text data.
+ * @param mobipocket MOBIPocket.
+ * @return uint32_t text data length.
+ */
+uint32_t mobipocket_text(char *text, const mobipocket_t mobipocket)
+{
+	uint32_t text_length = 0;
+	*text = '\0';
+
+	/* Encryption */
+	if (!is_palmdoc_encryption_none(mobipocket.palmdoc_header))
+		return 0;
+
+	/* No Encryption */
+	uint16_t index = 0;
+	for (index = 1; index < mobipocket.mobi_header.first_non_book_index; 
+	   index++)
+	{
+		uint32_t len = mobipocket_text_record_length(mobipocket, index);
+		if (len)
+		{
+			char text_record[len];
+			mobipocket_text_record(text_record, mobipocket, index);
+			strncat(text, text_record, len);
+			text_length += len;
+		}
+	}
+
+	return text_length;
+}
+
+/**
+ * Get the length of the MOBIPocket text.
+ * @param mobipocket MOBIPocket.
+ * @return uint32_t text data length.
+ */
+uint32_t mobipocket_text_length(const mobipocket_t mobipocket)
+{
+	uint32_t text_length = 0;
+
+	/* Encryption */
+	if (!is_palmdoc_encryption_none(mobipocket.palmdoc_header))
+		return 0;
+
+	/* No Encryption */
+	uint16_t index = 0;
+	for (index = 1; index < mobipocket.mobi_header.first_non_book_index; 
+	   index++)
+		text_length += mobipocket_text_record_length(mobipocket, index);
+
+	return text_length;
+}
+
+/**
+ * Get the data of the text record at specified index.
+ * @param *text text record data.
+ * @param mobipocket MOBIPocket.
+ * @param index index of text record.
+ * @return uint32_t text record data length.
+ */
+uint32_t mobipocket_text_record(char *text, const mobipocket_t mobipocket, 
+   uint16_t index)
+{
+	*text = '\0';
+
+	uint32_t len = get_pdb_record_data_len(mobipocket.pdb, index);
+	if (len > 0)
+	{
+		char *text_compress = mobipocket.pdb.records.record[index].data;
+
+		/* No Compression */
+		if (is_palmdoc_compression_none(mobipocket.palmdoc_header))
+		{
+			text = text_compress;
+			return len;
+		}
+
+		/* Assume PalmDoc (LZ77) Compression */
+		if (text_compress != NULL)
+			return lz77_decode(text, text_compress, len);
+	}
+
+	return 0;
+}
+
+/**
+ * Get the length of the text record at specified index.
+ * @param mobipocket MOBIPocket.
+ * @param index index of text record.
+ * @return uint32_t text record data length.
+ */
+uint32_t mobipocket_text_record_length(const mobipocket_t mobipocket, 
+   uint16_t index)
+{
+	uint32_t len = get_pdb_record_data_len(mobipocket.pdb, index);
+	if (len > 0)
+	{
+		char *text = mobipocket.pdb.records.record[index].data;
+
+		/* No Compression */
+		if (is_palmdoc_compression_none(mobipocket.palmdoc_header))
+			return len;
+
+		/* Assume PalmDoc (LZ77) Compression */
+		return lz77_decode_length(text, len);
+	}
+
+	return 0;
 }
 

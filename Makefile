@@ -3,7 +3,7 @@ CCFLAGS = -Wall -ansi
 INCDIR = include/
 INCLUDES = -I$(INCDIR)
 SRCDIR = src/
-SRC = base_header.c common.c exth_header.c mobi_header.c mobipocket.c palmdoc_header.c pdb.c
+SRC = base_header.c common.c exth_header.c mobi_header.c mobipocket.c palmdoc_header.c pdb.c lz77.c
 OBJ = $(SRC:.c=.o)
 LIB = libmobipocket.a
 INSTALLDIR = /usr/local/

@@ -11,6 +11,7 @@
 #include "palmdoc_header.h"
 #include "mobi_header.h"
 #include "exth_header.h"
+#include "lz77.h"
 
 /* Full Name */
 #define mobipocket_full_name(mobipocket) mobipocket.full_name
@@ -113,5 +114,8 @@ char* mobipocket_cover(const mobipocket_t mobipocket);
 uint32_t mobipocket_cover_length(const mobipocket_t mobipocket);
 char* mobipocket_thumb(const mobipocket_t mobipocket);
 uint32_t mobipocket_thumb_length(const mobipocket_t mobipocket);
+
+uint32_t mobipocket_text(char *text, const mobipocket_t mobipocket);
+uint32_t mobipocket_text_length(const mobipocket_t mobipocket);
 
 #endif /* MOBIPOCKET_H */
