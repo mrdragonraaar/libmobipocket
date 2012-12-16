@@ -155,8 +155,8 @@ uint32_t mobipocket_cover_length(const mobipocket_t mobipocket)
  */
 uint16_t mobipocket_cover_index(const mobipocket_t mobipocket)
 {
-	return mobipocket.mobi_header.first_image_index +
-	   mobipocket_cover_offset(mobipocket);
+	return mobipocket_image_record_offset2index(mobipocket, 
+	   mobipocket_cover_offset(mobipocket));
 }
 
 /**
@@ -188,8 +188,8 @@ uint32_t mobipocket_thumb_length(const mobipocket_t mobipocket)
  */
 uint16_t mobipocket_thumb_index(const mobipocket_t mobipocket)
 {
-	return mobipocket.mobi_header.first_image_index +
-	   mobipocket_thumb_offset(mobipocket);
+	return mobipocket_image_record_offset2index(mobipocket, 
+	   mobipocket_thumb_offset(mobipocket));
 }
 
 /**
@@ -221,6 +221,22 @@ uint32_t mobipocket_image_record_length(const mobipocket_t mobipocket,
 		return 0;
 
 	return get_pdb_record_data_len(mobipocket.pdb, index);
+}
+
+/**
+ * Get the index of image in the Palm Database records from offset.
+ * @param mobipocket MOBIPocket.
+ * @param offset offset of image record.
+ * @return uint16_t image data index.
+ */
+uint16_t mobipocket_image_record_offset2index(const mobipocket_t mobipocket, 
+   uint16_t offset)
+{
+	uint16_t index = mobipocket.mobi_header.first_image_index + offset;
+	if (is_mobipocket_image_record_index(mobipocket, index))
+		return index;
+
+	return 0;
 }
 
 /**
@@ -363,6 +379,22 @@ uint32_t mobipocket_text_record_length(const mobipocket_t mobipocket,
 		/* Assume PalmDoc (LZ77) Compression */
 		return lz77_decode_length(text, len);
 	}
+
+	return 0;
+}
+
+/**
+ * Get the index of text record in the Palm Database records from offset.
+ * @param mobipocket MOBIPocket.
+ * @param offset offset of text record.
+ * @return uint16_t text data index.
+ */
+uint16_t mobipocket_text_record_offset2index(const mobipocket_t mobipocket, 
+   uint16_t offset)
+{
+	uint16_t index = mobipocket.mobi_header.first_content_index + offset;
+	if (is_mobipocket_text_record_index(mobipocket, index))
+		return index;
 
 	return 0;
 }
