@@ -90,8 +90,8 @@ uint8_t valid_base_identifier(const base_header_t base_h)
 {
 	return ((base_h.identifier[0] >= 'A') &&
 	   (base_h.identifier[1] >= 'A') &&
-	   (base_h.identifier[1] >= 'A') &&
-	   (base_h.identifier[1] >= 'A'));
+	   (base_h.identifier[2] >= 'A') &&
+	   (base_h.identifier[3] >= 'A'));
 }
 
 /**
