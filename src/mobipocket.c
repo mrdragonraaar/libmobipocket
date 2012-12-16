@@ -14,11 +14,6 @@ size_t get_full_name(char **full_name, const mobi_header_t mobi_h,
 uint16_t mobipocket_cover_index(const mobipocket_t mobipocket);
 uint16_t mobipocket_thumb_index(const mobipocket_t mobipocket);
 
-uint32_t mobipocket_text_record(char *text, const mobipocket_t mobipocket, 
-   uint16_t index);
-uint32_t mobipocket_text_record_length(const mobipocket_t mobipocket, 
-   uint16_t index);
-
 /**
  * Initialise MOBIPocket.
  * @param *mobipocket pointer to location that stores MOBIPocket.
@@ -138,11 +133,8 @@ uint8_t is_mobipocket(const mobipocket_t mobipocket)
  */
 char* mobipocket_cover(const mobipocket_t mobipocket)
 {
-	uint16_t cover_index = mobipocket_cover_index(mobipocket);
-	if (cover_index && mobipocket_cover_length(mobipocket))
-		return mobipocket.pdb.records.record[cover_index].data;
-
-	return NULL;
+	return mobipocket_image_record(mobipocket, 
+	   mobipocket_cover_index(mobipocket));
 }
 
 /**
@@ -152,11 +144,8 @@ char* mobipocket_cover(const mobipocket_t mobipocket)
  */
 uint32_t mobipocket_cover_length(const mobipocket_t mobipocket)
 {
-	uint16_t cover_index = mobipocket_cover_index(mobipocket);
-	if (cover_index)
-		return get_pdb_record_data_len(mobipocket.pdb, cover_index);
-
-	return 0;
+	return mobipocket_image_record_length(mobipocket, 
+	   mobipocket_cover_index(mobipocket));
 }
 
 /**
@@ -177,11 +166,8 @@ uint16_t mobipocket_cover_index(const mobipocket_t mobipocket)
  */
 char* mobipocket_thumb(const mobipocket_t mobipocket)
 {
-	uint16_t thumb_index = mobipocket_thumb_index(mobipocket);
-	if (thumb_index && mobipocket_thumb_length(mobipocket))
-		return mobipocket.pdb.records.record[thumb_index].data;
-
-	return NULL;
+	return mobipocket_image_record(mobipocket, 
+	   mobipocket_thumb_index(mobipocket));
 }
 
 /**
@@ -191,11 +177,8 @@ char* mobipocket_thumb(const mobipocket_t mobipocket)
  */
 uint32_t mobipocket_thumb_length(const mobipocket_t mobipocket)
 {
-	uint16_t thumb_index = mobipocket_thumb_index(mobipocket);
-	if (thumb_index)
-		return get_pdb_record_data_len(mobipocket.pdb, thumb_index);
-
-	return 0;
+	return mobipocket_image_record_length(mobipocket, 
+	   mobipocket_thumb_index(mobipocket));
 }
 
 /**
@@ -207,6 +190,53 @@ uint16_t mobipocket_thumb_index(const mobipocket_t mobipocket)
 {
 	return mobipocket.mobi_header.first_image_index +
 	   mobipocket_thumb_offset(mobipocket);
+}
+
+/**
+ * Get the data of the image record at specified index.
+ * @param mobipocket MOBIPocket.
+ * @param index index of image record.
+ * @return char* image data.
+ */
+char* mobipocket_image_record(const mobipocket_t mobipocket, uint16_t index)
+{
+	/* Not a image record */
+	if (!mobipocket_image_record_length(mobipocket, index))
+		return NULL;
+
+	return mobipocket.pdb.records.record[index].data;
+}
+
+/**
+ * Get the length of the image record at specified index.
+ * @param mobipocket MOBIPocket.
+ * @param index index of image record.
+ * @return uint32_t image record data length.
+ */
+uint32_t mobipocket_image_record_length(const mobipocket_t mobipocket, 
+   uint16_t index)
+{
+	/* Not a image record */
+	if (!is_mobipocket_image_record_index(mobipocket, index))
+		return 0;
+
+	return get_pdb_record_data_len(mobipocket.pdb, index);
+}
+
+/**
+ * Check if specified index is a valid image record index.
+ * @param mobipocket MOBIPocket.
+ * @param index index of image record.
+ * @return uint8_t non-zero if valid image record index.
+ */
+uint8_t is_mobipocket_image_record_index(const mobipocket_t mobipocket, 
+   uint16_t index)
+{
+	uint16_t start_index = mobipocket.mobi_header.first_image_index;
+	uint16_t end_index = mobipocket.mobi_header.last_content_index;
+
+	return ((start_index > 0) && (end_index >= start_index) && 
+	   (index >= start_index) && (index <= end_index));
 }
 
 /**
@@ -225,9 +255,13 @@ uint32_t mobipocket_text(char *text, const mobipocket_t mobipocket)
 		return 0;
 
 	/* No Encryption */
-	uint16_t index = 0;
-	for (index = 1; index < mobipocket.mobi_header.first_non_book_index; 
-	   index++)
+	uint16_t start_index = mobipocket.mobi_header.first_content_index;
+	uint16_t end_index = mobipocket.mobi_header.first_non_book_index - 1;
+	if ((start_index <= 0) || (end_index < start_index))
+		return 0;
+
+	uint16_t index;
+	for (index = start_index; index <= end_index; index++)
 	{
 		uint32_t len = mobipocket_text_record_length(mobipocket, index);
 		if (len)
@@ -256,9 +290,13 @@ uint32_t mobipocket_text_length(const mobipocket_t mobipocket)
 		return 0;
 
 	/* No Encryption */
-	uint16_t index = 0;
-	for (index = 1; index < mobipocket.mobi_header.first_non_book_index; 
-	   index++)
+	uint16_t start_index = mobipocket.mobi_header.first_content_index;
+	uint16_t end_index = mobipocket.mobi_header.first_non_book_index - 1;
+	if ((start_index <= 0) || (end_index < start_index))
+		return 0;
+
+	uint16_t index;
+	for (index = start_index; index <= end_index; index++)
 		text_length += mobipocket_text_record_length(mobipocket, index);
 
 	return text_length;
@@ -275,6 +313,10 @@ uint32_t mobipocket_text_record(char *text, const mobipocket_t mobipocket,
    uint16_t index)
 {
 	*text = '\0';
+
+	/* Not a text record */
+	if (!is_mobipocket_text_record_index(mobipocket, index))
+		return 0;
 
 	uint32_t len = get_pdb_record_data_len(mobipocket.pdb, index);
 	if (len > 0)
@@ -305,6 +347,10 @@ uint32_t mobipocket_text_record(char *text, const mobipocket_t mobipocket,
 uint32_t mobipocket_text_record_length(const mobipocket_t mobipocket, 
    uint16_t index)
 {
+	/* Not a text record */
+	if (!is_mobipocket_text_record_index(mobipocket, index))
+		return 0;
+
 	uint32_t len = get_pdb_record_data_len(mobipocket.pdb, index);
 	if (len > 0)
 	{
@@ -319,5 +365,21 @@ uint32_t mobipocket_text_record_length(const mobipocket_t mobipocket,
 	}
 
 	return 0;
+}
+
+/**
+ * Check if specified index is a valid text record index.
+ * @param mobipocket MOBIPocket.
+ * @param index index of text record.
+ * @return uint8_t non-zero if valid text record index.
+ */
+uint8_t is_mobipocket_text_record_index(const mobipocket_t mobipocket, 
+   uint16_t index)
+{
+	uint16_t start_index = mobipocket.mobi_header.first_content_index;
+	uint16_t end_index = mobipocket.mobi_header.first_non_book_index - 1;
+
+	return ((start_index > 0) && (end_index >= start_index) && 
+	   (index >= start_index) && (index <= end_index));
 }
 

@@ -115,7 +115,19 @@ uint32_t mobipocket_cover_length(const mobipocket_t mobipocket);
 char* mobipocket_thumb(const mobipocket_t mobipocket);
 uint32_t mobipocket_thumb_length(const mobipocket_t mobipocket);
 
+char* mobipocket_image_record(const mobipocket_t mobipocket, uint16_t index);
+uint32_t mobipocket_image_record_length(const mobipocket_t mobipocket, 
+   uint16_t index);
+uint8_t is_mobipocket_image_record_index(const mobipocket_t mobipocket, 
+   uint16_t index);
+
 uint32_t mobipocket_text(char *text, const mobipocket_t mobipocket);
 uint32_t mobipocket_text_length(const mobipocket_t mobipocket);
+uint32_t mobipocket_text_record(char *text, const mobipocket_t mobipocket, 
+   uint16_t index);
+uint32_t mobipocket_text_record_length(const mobipocket_t mobipocket, 
+   uint16_t index);
+uint8_t is_mobipocket_text_record_index(const mobipocket_t mobipocket, 
+   uint16_t index);
 
 #endif /* MOBIPOCKET_H */
