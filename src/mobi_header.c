@@ -58,89 +58,173 @@ void convert_base2mobi(mobi_header_t *mobi_h, const base_header_t base_h)
 	mobi_h->header_length = base_h.header_length;
 
 	size_t offset = 0;
+	size_t data_length = mobi_h->header_length - BASE_HEADER_LEN;
+
 	/* MOBI Type */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->mobi_type, offset, base_h.data);
 	/* Text Encoding */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->text_encoding, offset, 
 	   base_h.data);
 	/* Unique ID */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->unique_id, offset, base_h.data);
 	/* File Version */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->file_version, offset, base_h.data);
 	/* Ortographic Index */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->ortographic_index, offset, 
 	   base_h.data);
 	/* Inflection Index */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->inflection_index, offset, 
 	   base_h.data);
 	/* Index Names */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->index_names, offset, base_h.data);
 	/* Index Keys */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->index_keys, offset, base_h.data);
 	/* Extra Index 0 */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->extra_index_0, offset, 
 	   base_h.data);
 	/* Extra Index 1 */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->extra_index_1, offset, 
 	   base_h.data);
 	/* Extra Index 2 */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->extra_index_2, offset, 
 	   base_h.data);
 	/* Extra Index 3 */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->extra_index_3, offset, 
 	   base_h.data);
 	/* Extra Index 4 */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->extra_index_4, offset, 
 	   base_h.data);
 	/* Extra Index 5 */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->extra_index_5, offset, 
 	   base_h.data);
 	/* First Non-Book Index */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->first_non_book_index, offset, 
 	   base_h.data);
 	/* Full Name Offset */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->full_name_offset, offset, 
 	   base_h.data);
 	/* Full Name Length */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->full_name_length, offset, 
 	   base_h.data);
 	/* Locale */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->locale, offset, base_h.data);
 	/* Input Language */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->input_language, offset, 
 	   base_h.data);
 	/* Output Language */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->output_language, offset, 
 	   base_h.data);
 	/* Min Version */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->min_version, offset, base_h.data);
 	/* First Image Index */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->first_image_index, offset, 
 	   base_h.data);
 	/* Huffman Record Offset */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->huffman_record_offset, offset, 
 	   base_h.data);
 	/* Huffman Record Count */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->huffman_record_count, offset, 
 	   base_h.data);
 	/* Huffman Table Offset */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->huffman_table_offset, offset, 
 	   base_h.data);
 	/* Huffman Table Length */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->huffman_table_length, offset, 
 	   base_h.data);
 	/* EXTH Flags */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->exth_flags, offset, base_h.data);
 	/* ignore unknown bytes */
+	if (offset + 32 > data_length) return;
 	offset += 32;
 	/* DRM Offset */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->drm_offset, offset, base_h.data);
 	/* DRM Count */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->drm_count, offset, base_h.data);
 	/* DRM Size */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->drm_size, offset, base_h.data);
 	/* DRM Flags */
+	if (offset + 4 > data_length) return;
 	offset = get_header_field_l(&mobi_h->drm_flags, offset, base_h.data);
+	/* ignore unknown bytes */
+	if (offset + 12 > data_length) return;
+	offset += 12;
+	/* First Content Record Index */
+	if (offset + 2 > data_length) return;
+	offset = get_header_field_s(&mobi_h->first_content_index, offset, 
+	   base_h.data);
+	/* Last Content Record Index */
+	if (offset + 2 > data_length) return;
+	offset = get_header_field_s(&mobi_h->last_content_index, offset, 
+	   base_h.data);
+	/* ignore unknown bytes */
+	if (offset + 4 > data_length) return;
+	offset += 4;
+	/* FCIS Index */
+	if (offset + 4 > data_length) return;
+	offset = get_header_field_l(&mobi_h->fcis_index, offset, base_h.data);
+	/* ignore unknown bytes */
+	if (offset + 4 > data_length) return;
+	offset += 4;
+	/* FLIS Index */
+	if (offset + 4 > data_length) return;
+	offset = get_header_field_l(&mobi_h->flis_index, offset, base_h.data);
+	/* ignore unknown bytes */
+	if (offset + 4 > data_length) return;
+	offset += 4;
+	/* ignore unknown bytes */
+	if (offset + 8 > data_length) return;
+	offset += 8;
+	/* ignore unknown bytes */
+	if (offset + 4 > data_length) return;
+	offset += 4;
+	/* First Compilation Data Section Count */
+	if (offset + 4 > data_length) return;
+	offset = get_header_field_l(
+	   &mobi_h->first_compilation_data_section_count, offset, base_h.data);
+	/* Number of Compilation Data Sections */
+	if (offset + 4 > data_length) return;
+	offset = get_header_field_l(
+	   &mobi_h->number_of_compilation_data_sections, offset, base_h.data);
+	/* ignore unknown bytes */
+	if (offset + 4 > data_length) return;
+	offset += 4;
+	/* Extra Record Data Flags */
+	if (offset + 4 > data_length) return;
+	offset = get_header_field_l(&mobi_h->extra_record_data_flags, offset, 
+	   base_h.data);
+	/* INDX Record Offset */
+	if (offset + 4 > data_length) return;
+	offset = get_header_field_l(&mobi_h->indx_offset, offset, base_h.data);
 }
 
 /**
@@ -252,5 +336,15 @@ void print_mobi_header(const mobi_header_t mobi_h)
 	printf("DRM Count: %i\n", mobi_h.drm_count);
 	printf("DRM Size: %i\n", mobi_h.drm_size);
 	printf("DRM Flags: %i\n", mobi_h.drm_flags);
+	printf("First Content Index: %i\n", mobi_h.first_content_index);
+	printf("Last Content Index: %i\n", mobi_h.last_content_index);
+	printf("FCIS Index: %i\n", mobi_h.fcis_index);
+	printf("FLIS Index: %i\n", mobi_h.flis_index);
+	printf("First Compilation Data Section Count: %i\n", 
+	   mobi_h.first_compilation_data_section_count);
+	printf("Number of Compilation Data Sections: %i\n", 
+	   mobi_h.number_of_compilation_data_sections);
+	printf("Extra Record Data Flags: %i\n", mobi_h.extra_record_data_flags);
+	printf("INDX Record Offset: %i\n", mobi_h.indx_offset);
 }
 

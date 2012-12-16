@@ -86,6 +86,14 @@ typedef struct {
 	uint32_t drm_count;
 	uint32_t drm_size;
 	uint32_t drm_flags;
+	uint16_t first_content_index;
+	uint16_t last_content_index;
+	uint32_t fcis_index;
+	uint32_t flis_index;
+	uint32_t first_compilation_data_section_count;
+	uint32_t number_of_compilation_data_sections;
+	uint32_t extra_record_data_flags;
+	uint32_t indx_offset;
 } mobi_header_t;
 
 void init_mobi_header(mobi_header_t *mobi_h);
