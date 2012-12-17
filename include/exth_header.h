@@ -8,6 +8,7 @@
 
 #include "common.h"
 #include "base_header.h"
+#include <time.h>
 
 #define HEADER_TYPE_EXTH "EXTH"	/* Header Type: EXTH */
 #define is_exth_header(base_h) is_header_type(base_h, HEADER_TYPE_EXTH)
@@ -111,6 +112,7 @@ uint32_t exth_record_index(const exth_header_t exth_h,
 char* exth_creator_software_str(const exth_header_t exth_h);
 uint8_t is_exth_cde_type(const exth_header_t exth_h, const char *cde_type);
 char* exth_cde_type_str(const exth_header_t exth_h);
+time_t exth_publishing_date_utc(struct tm *time, const exth_header_t exth_h);
 
 void print_exth_header(const exth_header_t exth_h);
 

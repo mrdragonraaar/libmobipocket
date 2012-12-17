@@ -303,6 +303,30 @@ char* exth_cde_type_str(const exth_header_t exth_h)
 }
 
 /**
+ * Get publishing date EXTH record as utc time_t.
+ * @param *time publishing date tm struct. Filled with tm_year, tm_mon 
+ *    and tm_mday on success.
+ * @param exth_h EXTH header.
+ * @return time_t publishing date time_t. -1 on error.
+ */
+time_t exth_publishing_date_utc(struct tm *time, const exth_header_t exth_h)
+{
+	char *pubdate = exth_record(exth_h, EXTH_RECORD_TYPE_PUBLISHINGDATE);
+	const char *format = "%d-%d-%d";
+
+	if ((pubdate != NULL) && (strlen(pubdate) > 10) &&
+	   (sscanf(pubdate, format, &time->tm_year, &time->tm_mon, 
+	      &time->tm_mday) == 3))
+	{
+		time->tm_mon--;
+		time->tm_year -= 1900;
+		return mktime(time);
+	}
+
+	return -1;
+}
+
+/**
  * Print EXTH header.
  * @param exth_h EXTH header.
  */
