@@ -42,6 +42,8 @@
 /* Publishing Date */
 #define mobipocket_publishing_date(mobipocket) \
    exth_record(mobipocket.exth_header, EXTH_RECORD_TYPE_PUBLISHINGDATE)
+#define mobipocket_publishing_date_utc(time, mobipocket) \
+   exth_publishing_date_utc(time, mobipocket.exth_header)
 /* Review */
 #define mobipocket_review(mobipocket) \
    exth_record(mobipocket.exth_header, EXTH_RECORD_TYPE_REVIEW)
