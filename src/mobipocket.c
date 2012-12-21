@@ -415,3 +415,17 @@ uint8_t is_mobipocket_text_record_index(const mobipocket_t mobipocket,
 	   (index >= start_index) && (index <= end_index));
 }
 
+/**
+ * Get the title.
+ * Returns full name if updated title does not exist.
+ * @param mobipocket MOBIPocket.
+ * @return char* title.
+ */
+char* mobipocket_title(const mobipocket_t mobipocket)
+{
+	if (mobipocket_updated_title(mobipocket) != NULL)
+		return mobipocket_updated_title(mobipocket);
+
+	return mobipocket_full_name(mobipocket);
+}
+

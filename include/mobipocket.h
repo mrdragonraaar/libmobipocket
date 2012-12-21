@@ -136,4 +136,6 @@ uint16_t mobipocket_text_record_offset2index(const mobipocket_t mobipocket,
 uint8_t is_mobipocket_text_record_index(const mobipocket_t mobipocket, 
    uint16_t index);
 
+char* mobipocket_title(const mobipocket_t mobipocket);
+
 #endif /* MOBIPOCKET_H */
