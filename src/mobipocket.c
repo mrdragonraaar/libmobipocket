@@ -276,6 +276,8 @@ uint32_t mobipocket_text(char *text, const mobipocket_t mobipocket)
 	if ((start_index <= 0) || (end_index < start_index))
 		return 0;
 
+	uint16_t max_record_size = mobipocket.palmdoc_header.record_size;
+
 	uint16_t index;
 	for (index = start_index; index <= end_index; index++)
 	{
@@ -284,6 +286,14 @@ uint32_t mobipocket_text(char *text, const mobipocket_t mobipocket)
 		{
 			char text_record[len];
 			mobipocket_text_record(text_record, mobipocket, index);
+
+			/* some records decompress to more than max 
+			 * record size for unknown reason. 
+			 * can lead to random text.
+			 */
+			if (len > max_record_size)
+				len = max_record_size;
+
 			strncat(text, text_record, len);
 			text_length += len;
 		}
@@ -311,9 +321,16 @@ uint32_t mobipocket_text_length(const mobipocket_t mobipocket)
 	if ((start_index <= 0) || (end_index < start_index))
 		return 0;
 
+	uint16_t max_record_size = mobipocket.palmdoc_header.record_size;
+
 	uint16_t index;
 	for (index = start_index; index <= end_index; index++)
-		text_length += mobipocket_text_record_length(mobipocket, index);
+	{
+		uint32_t len = mobipocket_text_record_length(mobipocket, index);
+		if (len > max_record_size)
+			len = max_record_size;
+		text_length += len;
+	}
 
 	return text_length;
 }
